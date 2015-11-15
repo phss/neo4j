@@ -21,7 +21,7 @@ package org.neo4j.cypher.internal.compiler.v3_0.commands.expressions
 
 import org.neo4j.cypher.internal.compiler.v3_0.ExecutionContext
 import org.neo4j.cypher.internal.compiler.v3_0.pipes.QueryStateHelper
-import org.neo4j.cypher.internal.frontend.v3_0.CypherTypeException
+import org.neo4j.cypher.internal.frontend.v3_0.{ParameterWrongTypeException, CypherTypeException}
 import org.neo4j.cypher.internal.frontend.v3_0.test_helpers.CypherFunSuite
 
 class ToIntFunctionTest extends CypherFunSuite {
@@ -63,7 +63,8 @@ class ToIntFunctionTest extends CypherFunSuite {
   }
 
   test("should throw an exception if the argument is an object which cannot be converted to integer") {
-    evaluating { toInt(new Object) } should produce[CypherTypeException]
+    val caughtException = evaluating { toInt(new Object) } should produce[ParameterWrongTypeException]
+    caughtException.getMessage should startWith("Expected a String or Number, got: ")
   }
 
   test("given an integer should give the same value back") {
