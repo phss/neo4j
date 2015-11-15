@@ -189,6 +189,15 @@ class FunctionsAcceptanceTest extends ExecutionEngineFunSuite with NewPlannerTes
     result should equal("true")
   }
 
+  test("toString should fail on type Any") {
+    // When
+    val query = "WITH [2, 2.9, '1.7'] AS numbers RETURN [n in numbers | toString(n)] AS int_numbers"
+    val error = intercept[SyntaxException](executeWithAllPlanners(query))
+
+    // Then
+    assert(error.getMessage.contains("Type mismatch: expected Boolean, Float, Integer or String but was Any"))
+  }
+
   test("case should handle mixed number types") {
     val query =
       """WITH 0.5 AS x
