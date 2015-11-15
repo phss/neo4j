@@ -198,6 +198,14 @@ class FunctionsAcceptanceTest extends ExecutionEngineFunSuite with NewPlannerTes
     assert(error.getMessage.contains("Type mismatch: expected Boolean, Float, Integer or String but was Any"))
   }
 
+  test("toString should work on an integer collection") {
+    // When
+    val result = executeWithAllPlanners("WITH [1, 2, 3] AS numbers RETURN [n in numbers | toString(n)] AS string_numbers")
+
+    // Then
+    result.toList should equal(List(Map("string_numbers" -> List("1", "2", "3"))))
+  }
+
   test("case should handle mixed number types") {
     val query =
       """WITH 0.5 AS x
